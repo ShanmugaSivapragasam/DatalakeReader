@@ -27,3 +27,6 @@ hs_err_pid*
 
 ##local build
 target/
+
+#security
+**/key-orig.json

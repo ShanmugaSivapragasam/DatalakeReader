@@ -11,11 +11,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.shan.datalakereader.repository.DataLakeRepositoryFactory.BIG_QUERY;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DatalakereaderApplicationTests {
+public class DatalakereaderApplicationTests extends  BaseTest{
 
 	@Autowired
 	private TestRestTemplate restTemplate;
@@ -24,16 +25,25 @@ public class DatalakereaderApplicationTests {
 	@Test
 	public void loadDataToGCS_Success_Response() throws Exception{
 
+		//prepare
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		DataLoadJob dataLoadJob = new DataLoadJob(Long.getLong("1"), "08-23-2007");
+		DataLoadJob dataLoadJob = podamFactory.manufacturePojo(DataLoadJob.class);
+		dataLoadJob.setDataSourceType(BIG_QUERY);
+		dataLoadJob.setQuery(null);
 		String dataLoadJobJson = JSONHelper.toJson(dataLoadJob);
 		HttpEntity<String> dataLoadJobRequestEntity = new HttpEntity<>(dataLoadJobJson, headers);
 		ResponseEntity<DataLoadResponse> responseEntity;
+
+		//call
 		responseEntity = this.restTemplate.exchange("/gcs/customers", HttpMethod.POST,dataLoadJobRequestEntity,  DataLoadResponse.class);
+
+		//assert
 		assertNotNull(responseEntity);
 		assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		assertNotNull(responseEntity.getBody() );
+		assertTrue( responseEntity.getBody().isSuccess());
 
 	}
 

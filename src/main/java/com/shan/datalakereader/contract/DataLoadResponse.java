@@ -1,13 +1,17 @@
 package com.shan.datalakereader.contract;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DataLoadResponse {
     Long id;
     String startTime;
     String endTime;
+    boolean isSuccess;
 
 
 }
